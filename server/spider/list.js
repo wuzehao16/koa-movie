@@ -5,7 +5,8 @@ let scrape = async () => {
   const page = await browser.newPage();
   await page.goto('http://books.toscrape.com/');
   // Scrape
-  await page.waitForSelector('img');
+  // await page.waitForSelector('img');
+  await page.waitFor(6000)
   // await page.click('div.image_container');
   const result = await page.evaluate(() => {
       let data = []; // 初始化空数组来存储数据
