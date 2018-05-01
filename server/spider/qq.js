@@ -23,6 +23,7 @@ function waitForFrame(page) {
 }
 
 let scrape = async () => {
+  console.log("start spider")
   const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
   await page.goto('https://xui.ptlogin2.qq.com/cgi-bin/xlogin?proxy_url=https%3A//qzs.qq.com/qzone/v6/portal/proxy.html&daid=5&&hide_title_bar=1&low_login=0&qlogin_auto_login=1&no_verifyimg=1&link_target=blank&appid=549000912&style=22&target=self&s_url=https%3A%2F%2Fqzs.qzone.qq.com%2Fqzone%2Fv5%2Floginsucc.html%3Fpara%3Dizone%26specifyurl%3Dhttp%253A%252F%252Fuser.qzone.qq.com%252F550237170%252F334%252F&pt_qr_app=手机QQ空间&pt_qr_link=http%3A//z.qzone.com/download.html&self_regurl=https%3A//qzs.qq.com/qzone/v6/reg/index.html&pt_qr_help_link=http%3A//z.qzone.com/download.html&pt_no_auth=0');
@@ -31,16 +32,16 @@ let scrape = async () => {
   await page.waitFor(4000)
   await page.click('#switcher_plogin')
   await page.type('[name=u]','279920030@qq.com', {delay: 20})
-  await page.type('[name=p]','123456', {delay: 20})
+  await page.type('[name=p]','test', {delay: 20})
   await page.click('#login_button')
-  await page.waitFor(3000)
-  const frame = await waitForFrame(page);
-  const button = await frame.$("a[onClick='QZBlog.Util.PageIndexManager.goPage(1);return false;']");
-  button.click();
-  await page.waitFor(1000)
-  var result = []
-  // while (result.length <100) {
-    result = await page.evaluate(() => {
+  await page.waitFor(5000)
+  var list = [];
+  while (list.length <100) {
+    let frame = await waitForFrame(page);
+    let button = await frame.$("a[onClick='QZBlog.Util.PageIndexManager.goPage(1);return false;']");
+    button.click();
+    await page.waitFor(2000)
+    let arr = await page.evaluate(() => {
          let data = []; // 初始化空数组来存储数据
          var obj = document.getElementById('tgb');
          let elements = obj.contentDocument.querySelectorAll('div.wrap'); // 获取名字
@@ -54,10 +55,15 @@ let scrape = async () => {
          }
          return data; // 返回数据
      });
-
+    list= list.concat(arr)
+     console.log(list.length)
+  }
   browser.close();
   return result;
 };
 scrape().then((value) => {
-    console.log(value); // 成功！
+  // console.log(value); // 成功！
+
+  process.send(value);
+  process.exit(0);
 });

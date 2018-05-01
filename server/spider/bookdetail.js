@@ -18,18 +18,6 @@ let scrape = async () => {
       }
       return data; // 返回数据
   });
-  // await page.click('#default > div > div > div > div > section > div:nth-child(2) > ol > li:nth-child(1) > article > div.image_container > a > img');
-  // await page.waitFor(1000);
-  // const result = await page.evaluate(() => {
-  //   let title = document.querySelector('h1').innerText;
-  //   let price = document.querySelector('.price_color').innerText;
-  //   let imgUrl = document.querySelector('.carousel-inner img').src;
-  // return {
-  //   title,
-  //   price,
-  //   imgUrl
-  // }
-  // });
   browser.close();
   return result;
 };
